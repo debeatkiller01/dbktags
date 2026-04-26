@@ -30,11 +30,13 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "DBK Tags — AI Social Branding Suite for Creators" },
+      {
+        name: "description",
+        content:
+          "Free AI tools for viral bios, captions, hashtags, usernames & branding kits. Built for TikTok, Instagram, YouTube, X & more.",
+      },
+      { name: "author", content: "DBK Tags" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
