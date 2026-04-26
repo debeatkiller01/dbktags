@@ -36,25 +36,13 @@ function buildPrompt(input: GenInput): { system: string; user: string } {
 
   const ctx = `Name: ${name}\nNiche: ${niche}\nPersonality: ${personality}\nGoals: ${goals}\nKeywords: ${keywords}\nTopic: ${topic}\nPlatform: ${platform}\nTone: ${tone}`;
 
-  // Platform-specific optimization rules (mirrors src/lib/platformRules.ts)
-  const RULES: Record<string, { bio: number; cap: number; hMin: number; hMax: number; hashtagNote: string; bioNote: string; capNote: string }> = {
-    TikTok:    { bio: 80,  cap: 150,   hMin: 3, hMax: 5,  hashtagNote: "3–5 highly relevant, viral-trend hashtags only. NO stuffing.", bioNote: "Max 80 chars. Identity + emoji + CTA.", capNote: "Punchy viral hook in first line. ≤150 chars ideal." },
-    Instagram: { bio: 150, cap: 2200,  hMin: 5, hMax: 15, hashtagNote: "5–15 strategic hashtags: mix broad + niche + micro tiers.", bioNote: "Max 150 chars. Line breaks, emojis, link CTA.", capNote: "Engagement-focused, hook + story + CTA + question." },
-    YouTube:   { bio: 1000,cap: 5000,  hMin: 3, hMax: 5,  hashtagNote: "3–5 SEO hashtags max (YouTube ignores >15).", bioNote: "Up to 1000 chars. Mission, schedule, links, CTA.", capNote: "SEO description: keywords in first 100 chars, timestamps, CTAs." },
-    X:         { bio: 160, cap: 280,   hMin: 1, hMax: 3,  hashtagNote: "1–3 hashtags max. Brevity wins.", bioNote: "Max 160 chars. Punchy identity + niche.", capNote: "≤280 chars. Bold take. 1–3 inline hashtags." },
-    LinkedIn:  { bio: 220, cap: 3000,  hMin: 3, hMax: 5,  hashtagNote: "3–5 professional industry hashtags only.", bioNote: "Max 220-char headline. Role + value prop + authority.", capNote: "Story-driven, value-led. Line breaks. End with question/CTA." },
-    Facebook:  { bio: 101, cap: 500,   hMin: 2, hMax: 5,  hashtagNote: "2–5 hashtags. Community-focused, conversational.", bioNote: "Max 101 chars short bio. Friendly tone.", capNote: "Conversational, encourages shares and comments." },
-  };
-  const r = RULES[platform] ?? RULES.Instagram;
-  const platformBlock = `\n\n=== ${platform.toUpperCase()} OPTIMIZATION RULES (STRICT) ===\nBio limit: ${r.bio} chars — ${r.bioNote}\nCaption guidance: ${r.capNote}\nHashtag rule: ${r.hashtagNote}\nYou MUST respect these limits and conventions.`;
-
   const map: Record<string, string> = {
-    bio: `Generate 5 distinct ${platform} bios. Each bio MUST be ≤${r.bio} characters. Each bio on its own line, numbered 1-5. Scroll-stopping, on-trend, identity-defining. After each bio, append " (Xc)" where X is the actual character count.${platformBlock}\n\n${ctx}`,
-    username: `Generate 10 unique, brandable, available-sounding usernames optimized for ${platform}. Mix styles: short, alliterative, punchy, modern. Numbered 1-10, no spaces, lowercase, max 20 chars.\n\n${ctx}`,
-    caption: `Generate 5 viral ${platform} captions for: "${topic || niche}". Hook in first 3 words. Include 1 CTA each. Each caption MUST respect ${platform}'s caption style. Numbered 1-5.${platformBlock}\n\n${ctx}`,
-    hashtag: `Generate EXACTLY ${r.hMin}-${r.hMax} hashtags optimized for ${platform} about "${topic || niche}". Mix tiers appropriately for the platform (broad + niche + micro where relevant). Output as a single space-separated line, each starting with #. Do NOT exceed ${r.hMax} hashtags. Then on a new line write "Recommended for ${platform}: ${r.hMin}–${r.hMax} hashtags".${platformBlock}\n\n${ctx}`,
-    cta: `Generate 8 punchy link-in-bio CTAs for ${platform} (max 6 words each). Numbered 1-8.${platformBlock}\n\n${ctx}`,
-    branding: `Create a complete personal branding kit optimized for ${platform}. Output sections with these exact headings: TAGLINE, BIO (≤${r.bio} chars for ${platform}), MISSION, BRAND VOICE, 5 CONTENT PILLARS, 3 SLOGANS, COLOR VIBE, TARGET AUDIENCE.${platformBlock}\n\n${ctx}`,
+    bio: `Generate 5 distinct ${platform} bios. Respect platform character limits (TikTok 80, Instagram 150, X 160, YouTube 1000, LinkedIn 220, Facebook 101). Each bio on its own line, numbered 1-5. Make them scroll-stopping, on-trend, and identity-defining.\n\n${ctx}`,
+    username: `Generate 10 unique, brandable, available-sounding usernames. Mix styles: short, alliterative, punchy, modern. Numbered 1-10, no spaces, lowercase, max 20 chars.\n\n${ctx}`,
+    caption: `Generate 5 viral ${platform} captions for: "${topic || niche}". Hook in first 3 words. Include 1 CTA each. Numbered 1-5.\n\n${ctx}`,
+    hashtag: `Generate 30 trending, mixed-tier (broad + niche + micro) hashtags for ${platform} about "${topic || niche}". Output as a single space-separated line, each starting with #.\n\n${ctx}`,
+    cta: `Generate 8 punchy link-in-bio CTAs (max 6 words each). Numbered 1-8.\n\n${ctx}`,
+    branding: `Create a complete personal branding kit. Output sections with these exact headings: TAGLINE, BIO, MISSION, BRAND VOICE, 5 CONTENT PILLARS, 3 SLOGANS, COLOR VIBE, TARGET AUDIENCE.\n\n${ctx}`,
   };
 
   return { system, user: map[tool] ?? map.bio };
