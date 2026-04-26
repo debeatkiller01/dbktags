@@ -13,6 +13,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToolsUsernameRouteImport } from './routes/tools/username'
+import { Route as ToolsTiktokBioRouteImport } from './routes/tools/tiktok-bio'
 import { Route as ToolsHashtagRouteImport } from './routes/tools/hashtag'
 import { Route as ToolsCtaRouteImport } from './routes/tools/cta'
 import { Route as ToolsCaptionRouteImport } from './routes/tools/caption'
@@ -37,6 +38,11 @@ const IndexRoute = IndexRouteImport.update({
 const ToolsUsernameRoute = ToolsUsernameRouteImport.update({
   id: '/tools/username',
   path: '/tools/username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsTiktokBioRoute = ToolsTiktokBioRouteImport.update({
+  id: '/tools/tiktok-bio',
+  path: '/tools/tiktok-bio',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsHashtagRoute = ToolsHashtagRouteImport.update({
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/tools/caption': typeof ToolsCaptionRoute
   '/tools/cta': typeof ToolsCtaRoute
   '/tools/hashtag': typeof ToolsHashtagRoute
+  '/tools/tiktok-bio': typeof ToolsTiktokBioRoute
   '/tools/username': typeof ToolsUsernameRoute
 }
 export interface FileRoutesByTo {
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/tools/caption': typeof ToolsCaptionRoute
   '/tools/cta': typeof ToolsCtaRoute
   '/tools/hashtag': typeof ToolsHashtagRoute
+  '/tools/tiktok-bio': typeof ToolsTiktokBioRoute
   '/tools/username': typeof ToolsUsernameRoute
 }
 export interface FileRoutesById {
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/tools/caption': typeof ToolsCaptionRoute
   '/tools/cta': typeof ToolsCtaRoute
   '/tools/hashtag': typeof ToolsHashtagRoute
+  '/tools/tiktok-bio': typeof ToolsTiktokBioRoute
   '/tools/username': typeof ToolsUsernameRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/tools/caption'
     | '/tools/cta'
     | '/tools/hashtag'
+    | '/tools/tiktok-bio'
     | '/tools/username'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/tools/caption'
     | '/tools/cta'
     | '/tools/hashtag'
+    | '/tools/tiktok-bio'
     | '/tools/username'
   id:
     | '__root__'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/tools/caption'
     | '/tools/cta'
     | '/tools/hashtag'
+    | '/tools/tiktok-bio'
     | '/tools/username'
   fileRoutesById: FileRoutesById
 }
@@ -144,6 +156,7 @@ export interface RootRouteChildren {
   ToolsCaptionRoute: typeof ToolsCaptionRoute
   ToolsCtaRoute: typeof ToolsCtaRoute
   ToolsHashtagRoute: typeof ToolsHashtagRoute
+  ToolsTiktokBioRoute: typeof ToolsTiktokBioRoute
   ToolsUsernameRoute: typeof ToolsUsernameRoute
 }
 
@@ -175,6 +188,13 @@ declare module '@tanstack/react-router' {
       path: '/tools/username'
       fullPath: '/tools/username'
       preLoaderRoute: typeof ToolsUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/tiktok-bio': {
+      id: '/tools/tiktok-bio'
+      path: '/tools/tiktok-bio'
+      fullPath: '/tools/tiktok-bio'
+      preLoaderRoute: typeof ToolsTiktokBioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools/hashtag': {
@@ -224,6 +244,7 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsCaptionRoute: ToolsCaptionRoute,
   ToolsCtaRoute: ToolsCtaRoute,
   ToolsHashtagRoute: ToolsHashtagRoute,
+  ToolsTiktokBioRoute: ToolsTiktokBioRoute,
   ToolsUsernameRoute: ToolsUsernameRoute,
 }
 export const routeTree = rootRouteImport
