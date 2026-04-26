@@ -9,38 +9,160 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ToolsUsernameRouteImport } from './routes/tools/username'
+import { Route as ToolsHashtagRouteImport } from './routes/tools/hashtag'
+import { Route as ToolsCtaRouteImport } from './routes/tools/cta'
+import { Route as ToolsCaptionRouteImport } from './routes/tools/caption'
+import { Route as ToolsBrandingRouteImport } from './routes/tools/branding'
+import { Route as ToolsBioRouteImport } from './routes/tools/bio'
 
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsUsernameRoute = ToolsUsernameRouteImport.update({
+  id: '/tools/username',
+  path: '/tools/username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsHashtagRoute = ToolsHashtagRouteImport.update({
+  id: '/tools/hashtag',
+  path: '/tools/hashtag',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsCtaRoute = ToolsCtaRouteImport.update({
+  id: '/tools/cta',
+  path: '/tools/cta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsCaptionRoute = ToolsCaptionRouteImport.update({
+  id: '/tools/caption',
+  path: '/tools/caption',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsBrandingRoute = ToolsBrandingRouteImport.update({
+  id: '/tools/branding',
+  path: '/tools/branding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsBioRoute = ToolsBioRouteImport.update({
+  id: '/tools/bio',
+  path: '/tools/bio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/blog': typeof BlogRoute
+  '/dashboard': typeof DashboardRoute
+  '/tools/bio': typeof ToolsBioRoute
+  '/tools/branding': typeof ToolsBrandingRoute
+  '/tools/caption': typeof ToolsCaptionRoute
+  '/tools/cta': typeof ToolsCtaRoute
+  '/tools/hashtag': typeof ToolsHashtagRoute
+  '/tools/username': typeof ToolsUsernameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/blog': typeof BlogRoute
+  '/dashboard': typeof DashboardRoute
+  '/tools/bio': typeof ToolsBioRoute
+  '/tools/branding': typeof ToolsBrandingRoute
+  '/tools/caption': typeof ToolsCaptionRoute
+  '/tools/cta': typeof ToolsCtaRoute
+  '/tools/hashtag': typeof ToolsHashtagRoute
+  '/tools/username': typeof ToolsUsernameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/blog': typeof BlogRoute
+  '/dashboard': typeof DashboardRoute
+  '/tools/bio': typeof ToolsBioRoute
+  '/tools/branding': typeof ToolsBrandingRoute
+  '/tools/caption': typeof ToolsCaptionRoute
+  '/tools/cta': typeof ToolsCtaRoute
+  '/tools/hashtag': typeof ToolsHashtagRoute
+  '/tools/username': typeof ToolsUsernameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/blog'
+    | '/dashboard'
+    | '/tools/bio'
+    | '/tools/branding'
+    | '/tools/caption'
+    | '/tools/cta'
+    | '/tools/hashtag'
+    | '/tools/username'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/blog'
+    | '/dashboard'
+    | '/tools/bio'
+    | '/tools/branding'
+    | '/tools/caption'
+    | '/tools/cta'
+    | '/tools/hashtag'
+    | '/tools/username'
+  id:
+    | '__root__'
+    | '/'
+    | '/blog'
+    | '/dashboard'
+    | '/tools/bio'
+    | '/tools/branding'
+    | '/tools/caption'
+    | '/tools/cta'
+    | '/tools/hashtag'
+    | '/tools/username'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BlogRoute: typeof BlogRoute
+  DashboardRoute: typeof DashboardRoute
+  ToolsBioRoute: typeof ToolsBioRoute
+  ToolsBrandingRoute: typeof ToolsBrandingRoute
+  ToolsCaptionRoute: typeof ToolsCaptionRoute
+  ToolsCtaRoute: typeof ToolsCtaRoute
+  ToolsHashtagRoute: typeof ToolsHashtagRoute
+  ToolsUsernameRoute: typeof ToolsUsernameRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,21 +170,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/username': {
+      id: '/tools/username'
+      path: '/tools/username'
+      fullPath: '/tools/username'
+      preLoaderRoute: typeof ToolsUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/hashtag': {
+      id: '/tools/hashtag'
+      path: '/tools/hashtag'
+      fullPath: '/tools/hashtag'
+      preLoaderRoute: typeof ToolsHashtagRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/cta': {
+      id: '/tools/cta'
+      path: '/tools/cta'
+      fullPath: '/tools/cta'
+      preLoaderRoute: typeof ToolsCtaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/caption': {
+      id: '/tools/caption'
+      path: '/tools/caption'
+      fullPath: '/tools/caption'
+      preLoaderRoute: typeof ToolsCaptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/branding': {
+      id: '/tools/branding'
+      path: '/tools/branding'
+      fullPath: '/tools/branding'
+      preLoaderRoute: typeof ToolsBrandingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/bio': {
+      id: '/tools/bio'
+      path: '/tools/bio'
+      fullPath: '/tools/bio'
+      preLoaderRoute: typeof ToolsBioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BlogRoute: BlogRoute,
+  DashboardRoute: DashboardRoute,
+  ToolsBioRoute: ToolsBioRoute,
+  ToolsBrandingRoute: ToolsBrandingRoute,
+  ToolsCaptionRoute: ToolsCaptionRoute,
+  ToolsCtaRoute: ToolsCtaRoute,
+  ToolsHashtagRoute: ToolsHashtagRoute,
+  ToolsUsernameRoute: ToolsUsernameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
