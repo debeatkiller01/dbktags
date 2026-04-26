@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Copy, Loader2, Sparkles, Heart, Info, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { PLATFORMS, getPlatformRule } from "@/lib/platformRules";
+import { PLATFORMS, getPlatformRule, type Platform } from "@/lib/platformRules";
 
 export type ToolKey =
   | "bio"
@@ -41,7 +41,7 @@ export function GeneratorForm({
   const [goals, setGoals] = useState("");
   const [keywords, setKeywords] = useState("");
   const [topic, setTopic] = useState("");
-  const [platform, setPlatform] = useState(PLATFORMS[1]);
+  const [platform, setPlatform] = useState<Platform>(PLATFORMS[1]);
   const [tone, setTone] = useState(TONES[8]);
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState("");
@@ -156,7 +156,7 @@ export function GeneratorForm({
                 <select
                   className="input"
                   value={platform}
-                  onChange={(e) => setPlatform(e.target.value)}
+                  onChange={(e) => setPlatform(e.target.value as Platform)}
                 >
                   {PLATFORMS.map((p) => (
                     <option key={p}>{p}</option>
