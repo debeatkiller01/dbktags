@@ -12,7 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ToolsYoutubeDescriptionRouteImport } from './routes/tools/youtube-description'
+import { Route as ToolsXBioRouteImport } from './routes/tools/x-bio'
 import { Route as ToolsUsernameRouteImport } from './routes/tools/username'
+import { Route as ToolsTiktokBioRouteImport } from './routes/tools/tiktok-bio'
+import { Route as ToolsInstagramBioRouteImport } from './routes/tools/instagram-bio'
 import { Route as ToolsHashtagRouteImport } from './routes/tools/hashtag'
 import { Route as ToolsCtaRouteImport } from './routes/tools/cta'
 import { Route as ToolsCaptionRouteImport } from './routes/tools/caption'
@@ -34,9 +38,29 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsYoutubeDescriptionRoute = ToolsYoutubeDescriptionRouteImport.update({
+  id: '/tools/youtube-description',
+  path: '/tools/youtube-description',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsXBioRoute = ToolsXBioRouteImport.update({
+  id: '/tools/x-bio',
+  path: '/tools/x-bio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsUsernameRoute = ToolsUsernameRouteImport.update({
   id: '/tools/username',
   path: '/tools/username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsTiktokBioRoute = ToolsTiktokBioRouteImport.update({
+  id: '/tools/tiktok-bio',
+  path: '/tools/tiktok-bio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsInstagramBioRoute = ToolsInstagramBioRouteImport.update({
+  id: '/tools/instagram-bio',
+  path: '/tools/instagram-bio',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsHashtagRoute = ToolsHashtagRouteImport.update({
@@ -74,7 +98,11 @@ export interface FileRoutesByFullPath {
   '/tools/caption': typeof ToolsCaptionRoute
   '/tools/cta': typeof ToolsCtaRoute
   '/tools/hashtag': typeof ToolsHashtagRoute
+  '/tools/instagram-bio': typeof ToolsInstagramBioRoute
+  '/tools/tiktok-bio': typeof ToolsTiktokBioRoute
   '/tools/username': typeof ToolsUsernameRoute
+  '/tools/x-bio': typeof ToolsXBioRoute
+  '/tools/youtube-description': typeof ToolsYoutubeDescriptionRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -85,7 +113,11 @@ export interface FileRoutesByTo {
   '/tools/caption': typeof ToolsCaptionRoute
   '/tools/cta': typeof ToolsCtaRoute
   '/tools/hashtag': typeof ToolsHashtagRoute
+  '/tools/instagram-bio': typeof ToolsInstagramBioRoute
+  '/tools/tiktok-bio': typeof ToolsTiktokBioRoute
   '/tools/username': typeof ToolsUsernameRoute
+  '/tools/x-bio': typeof ToolsXBioRoute
+  '/tools/youtube-description': typeof ToolsYoutubeDescriptionRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -97,7 +129,11 @@ export interface FileRoutesById {
   '/tools/caption': typeof ToolsCaptionRoute
   '/tools/cta': typeof ToolsCtaRoute
   '/tools/hashtag': typeof ToolsHashtagRoute
+  '/tools/instagram-bio': typeof ToolsInstagramBioRoute
+  '/tools/tiktok-bio': typeof ToolsTiktokBioRoute
   '/tools/username': typeof ToolsUsernameRoute
+  '/tools/x-bio': typeof ToolsXBioRoute
+  '/tools/youtube-description': typeof ToolsYoutubeDescriptionRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -110,7 +146,11 @@ export interface FileRouteTypes {
     | '/tools/caption'
     | '/tools/cta'
     | '/tools/hashtag'
+    | '/tools/instagram-bio'
+    | '/tools/tiktok-bio'
     | '/tools/username'
+    | '/tools/x-bio'
+    | '/tools/youtube-description'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -121,7 +161,11 @@ export interface FileRouteTypes {
     | '/tools/caption'
     | '/tools/cta'
     | '/tools/hashtag'
+    | '/tools/instagram-bio'
+    | '/tools/tiktok-bio'
     | '/tools/username'
+    | '/tools/x-bio'
+    | '/tools/youtube-description'
   id:
     | '__root__'
     | '/'
@@ -132,7 +176,11 @@ export interface FileRouteTypes {
     | '/tools/caption'
     | '/tools/cta'
     | '/tools/hashtag'
+    | '/tools/instagram-bio'
+    | '/tools/tiktok-bio'
     | '/tools/username'
+    | '/tools/x-bio'
+    | '/tools/youtube-description'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -144,7 +192,11 @@ export interface RootRouteChildren {
   ToolsCaptionRoute: typeof ToolsCaptionRoute
   ToolsCtaRoute: typeof ToolsCtaRoute
   ToolsHashtagRoute: typeof ToolsHashtagRoute
+  ToolsInstagramBioRoute: typeof ToolsInstagramBioRoute
+  ToolsTiktokBioRoute: typeof ToolsTiktokBioRoute
   ToolsUsernameRoute: typeof ToolsUsernameRoute
+  ToolsXBioRoute: typeof ToolsXBioRoute
+  ToolsYoutubeDescriptionRoute: typeof ToolsYoutubeDescriptionRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -170,11 +222,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/youtube-description': {
+      id: '/tools/youtube-description'
+      path: '/tools/youtube-description'
+      fullPath: '/tools/youtube-description'
+      preLoaderRoute: typeof ToolsYoutubeDescriptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/x-bio': {
+      id: '/tools/x-bio'
+      path: '/tools/x-bio'
+      fullPath: '/tools/x-bio'
+      preLoaderRoute: typeof ToolsXBioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools/username': {
       id: '/tools/username'
       path: '/tools/username'
       fullPath: '/tools/username'
       preLoaderRoute: typeof ToolsUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/tiktok-bio': {
+      id: '/tools/tiktok-bio'
+      path: '/tools/tiktok-bio'
+      fullPath: '/tools/tiktok-bio'
+      preLoaderRoute: typeof ToolsTiktokBioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/instagram-bio': {
+      id: '/tools/instagram-bio'
+      path: '/tools/instagram-bio'
+      fullPath: '/tools/instagram-bio'
+      preLoaderRoute: typeof ToolsInstagramBioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools/hashtag': {
@@ -224,8 +304,21 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsCaptionRoute: ToolsCaptionRoute,
   ToolsCtaRoute: ToolsCtaRoute,
   ToolsHashtagRoute: ToolsHashtagRoute,
+  ToolsInstagramBioRoute: ToolsInstagramBioRoute,
+  ToolsTiktokBioRoute: ToolsTiktokBioRoute,
   ToolsUsernameRoute: ToolsUsernameRoute,
+  ToolsXBioRoute: ToolsXBioRoute,
+  ToolsYoutubeDescriptionRoute: ToolsYoutubeDescriptionRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
