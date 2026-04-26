@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ToolsUsernameRouteImport } from './routes/tools/username'
 import { Route as ToolsBioRouteImport } from './routes/tools/bio'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsUsernameRoute = ToolsUsernameRouteImport.update({
+  id: '/tools/username',
+  path: '/tools/username',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsBioRoute = ToolsBioRouteImport.update({
@@ -26,27 +32,31 @@ const ToolsBioRoute = ToolsBioRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/tools/bio': typeof ToolsBioRoute
+  '/tools/username': typeof ToolsUsernameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/tools/bio': typeof ToolsBioRoute
+  '/tools/username': typeof ToolsUsernameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/tools/bio': typeof ToolsBioRoute
+  '/tools/username': typeof ToolsUsernameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/tools/bio'
+  fullPaths: '/' | '/tools/bio' | '/tools/username'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/tools/bio'
-  id: '__root__' | '/' | '/tools/bio'
+  to: '/' | '/tools/bio' | '/tools/username'
+  id: '__root__' | '/' | '/tools/bio' | '/tools/username'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ToolsBioRoute: typeof ToolsBioRoute
+  ToolsUsernameRoute: typeof ToolsUsernameRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/username': {
+      id: '/tools/username'
+      path: '/tools/username'
+      fullPath: '/tools/username'
+      preLoaderRoute: typeof ToolsUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools/bio': {
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ToolsBioRoute: ToolsBioRoute,
+  ToolsUsernameRoute: ToolsUsernameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
