@@ -40,6 +40,13 @@ export const Route = createRootRoute({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { property: "og:title", content: "DBK Tags — AI Social Branding Suite for Creators" },
+      { name: "twitter:title", content: "DBK Tags — AI Social Branding Suite for Creators" },
+      { name: "description", content: "DBK Tags is an AI social branding tool that creates bios, captions, hashtags, and usernames optimized for TikTok, Instagram, YouTube and more." },
+      { property: "og:description", content: "DBK Tags is an AI social branding tool that creates bios, captions, hashtags, and usernames optimized for TikTok, Instagram, YouTube and more." },
+      { name: "twitter:description", content: "DBK Tags is an AI social branding tool that creates bios, captions, hashtags, and usernames optimized for TikTok, Instagram, YouTube and more." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wEVjZcqSqTSNqyOacGgffKBb9aL2/social-images/social-1777240328031-1001145112.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/wEVjZcqSqTSNqyOacGgffKBb9aL2/social-images/social-1777240328031-1001145112.webp" },
     ],
     links: [
       {
