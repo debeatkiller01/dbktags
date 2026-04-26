@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Copy, Loader2, Sparkles, Heart } from "lucide-react";
+import { Copy, Loader2, Sparkles, Heart, Info, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { PLATFORMS, getPlatformRule } from "@/lib/platformRules";
 
 export type ToolKey =
   | "bio"
@@ -21,15 +22,6 @@ const TONES = [
   "Romantic",
   "Business",
   "Viral/Gen Z",
-];
-
-const PLATFORMS = [
-  "TikTok",
-  "Instagram",
-  "YouTube",
-  "X",
-  "LinkedIn",
-  "Facebook",
 ];
 
 export function GeneratorForm({
@@ -53,6 +45,36 @@ export function GeneratorForm({
   const [tone, setTone] = useState(TONES[8]);
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState("");
+
+  const rule = getPlatformRule(platform);
+
+  // Per-tool platform metric to show in the indicator
+  const indicator = (() => {
+    switch (tool) {
+      case "hashtag":
+        return { label: "Recommended hashtags", value: rule.hashtagIdeal };
+      case "bio":
+      case "branding":
+        return { label: "Bio limit", value: `${rule.bioLimit} chars` };
+      case "caption":
+        return { label: "Caption style", value: rule.captionStyle.split(".")[0] };
+      case "cta":
+        return { label: "CTA style", value: "Max 6 words, punchy" };
+      default:
+        return { label: "Optimized for", value: platform };
+    }
+  })();
+
+  // Output post-processing: hashtag overflow warning
+  const hashtagWarning = (() => {
+    if (tool !== "hashtag" || !output) return null;
+    const count = (output.match(/#\w+/g) || []).length;
+    if (count > rule.hashtagMax)
+      return `⚠️ ${count} hashtags detected — ${platform} performs best with ${rule.hashtagIdeal}. Consider trimming.`;
+    if (count > 0 && count < rule.hashtagMin)
+      return `ℹ️ Only ${count} hashtag${count === 1 ? "" : "s"} — ${platform} ideal is ${rule.hashtagIdeal}.`;
+    return null;
+  })();
 
   const generate = async () => {
     if (!niche.trim()) {
@@ -154,6 +176,23 @@ export function GeneratorForm({
               </select>
             </Field>
           </div>
+
+          {showPlatform && (
+            <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 text-xs">
+              <div className="mb-1 flex items-center gap-1.5 font-semibold text-primary">
+                <Info className="h-3.5 w-3.5" />
+                Best for {platform}
+              </div>
+              <div className="grid gap-1 text-muted-foreground">
+                <div>
+                  <span className="font-medium text-foreground">{indicator.label}:</span>{" "}
+                  {indicator.value}
+                </div>
+                <div className="text-[11px] leading-relaxed">{rule.tip}</div>
+              </div>
+            </div>
+          )}
+
           <Field label="Personality (optional)">
             <input
               className="input"
@@ -199,7 +238,14 @@ export function GeneratorForm({
         style={{ background: "var(--gradient-card)" }}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold">Output</h2>
+          <div>
+            <h2 className="text-lg font-bold">Output</h2>
+            {output && (
+              <p className="mt-0.5 text-[11px] text-muted-foreground">
+                {output.length} chars · optimized for {platform}
+              </p>
+            )}
+          </div>
           {output && (
             <div className="flex gap-2">
               <button
@@ -217,6 +263,12 @@ export function GeneratorForm({
             </div>
           )}
         </div>
+        {hashtagWarning && (
+          <div className="mb-3 flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-2.5 text-xs text-amber-700 dark:text-amber-300">
+            <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <span>{hashtagWarning}</span>
+          </div>
+        )}
         <div className="min-h-[320px] whitespace-pre-wrap rounded-xl border border-dashed border-border bg-background/50 p-4 text-sm leading-relaxed">
           {output || (
             <span className="text-muted-foreground">
