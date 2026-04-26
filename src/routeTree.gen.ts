@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToolsUsernameRouteImport } from './routes/tools/username'
+import { Route as ToolsHashtagRouteImport } from './routes/tools/hashtag'
 import { Route as ToolsCaptionRouteImport } from './routes/tools/caption'
 import { Route as ToolsBioRouteImport } from './routes/tools/bio'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const ToolsUsernameRoute = ToolsUsernameRouteImport.update({
   id: '/tools/username',
   path: '/tools/username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsHashtagRoute = ToolsHashtagRouteImport.update({
+  id: '/tools/hashtag',
+  path: '/tools/hashtag',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsCaptionRoute = ToolsCaptionRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/tools/bio': typeof ToolsBioRoute
   '/tools/caption': typeof ToolsCaptionRoute
+  '/tools/hashtag': typeof ToolsHashtagRoute
   '/tools/username': typeof ToolsUsernameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/tools/bio': typeof ToolsBioRoute
   '/tools/caption': typeof ToolsCaptionRoute
+  '/tools/hashtag': typeof ToolsHashtagRoute
   '/tools/username': typeof ToolsUsernameRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,38 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/tools/bio': typeof ToolsBioRoute
   '/tools/caption': typeof ToolsCaptionRoute
+  '/tools/hashtag': typeof ToolsHashtagRoute
   '/tools/username': typeof ToolsUsernameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/tools/bio' | '/tools/caption' | '/tools/username'
+  fullPaths:
+    | '/'
+    | '/tools/bio'
+    | '/tools/caption'
+    | '/tools/hashtag'
+    | '/tools/username'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/tools/bio' | '/tools/caption' | '/tools/username'
-  id: '__root__' | '/' | '/tools/bio' | '/tools/caption' | '/tools/username'
+  to:
+    | '/'
+    | '/tools/bio'
+    | '/tools/caption'
+    | '/tools/hashtag'
+    | '/tools/username'
+  id:
+    | '__root__'
+    | '/'
+    | '/tools/bio'
+    | '/tools/caption'
+    | '/tools/hashtag'
+    | '/tools/username'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ToolsBioRoute: typeof ToolsBioRoute
   ToolsCaptionRoute: typeof ToolsCaptionRoute
+  ToolsHashtagRoute: typeof ToolsHashtagRoute
   ToolsUsernameRoute: typeof ToolsUsernameRoute
 }
 
@@ -83,6 +109,13 @@ declare module '@tanstack/react-router' {
       path: '/tools/username'
       fullPath: '/tools/username'
       preLoaderRoute: typeof ToolsUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/hashtag': {
+      id: '/tools/hashtag'
+      path: '/tools/hashtag'
+      fullPath: '/tools/hashtag'
+      preLoaderRoute: typeof ToolsHashtagRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools/caption': {
@@ -106,6 +139,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ToolsBioRoute: ToolsBioRoute,
   ToolsCaptionRoute: ToolsCaptionRoute,
+  ToolsHashtagRoute: ToolsHashtagRoute,
   ToolsUsernameRoute: ToolsUsernameRoute,
 }
 export const routeTree = rootRouteImport
