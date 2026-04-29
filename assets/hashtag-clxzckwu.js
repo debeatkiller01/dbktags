@@ -1,0 +1,1 @@
+import{j as o}from"./index-D8kwP12P.js";import{T as t}from"./ToolPage-CGhuoHyI.js";import"./SiteShell-Z1higHEt.js";import"./AdSlot-B_74qiqe.js";const s=()=>o.jsx(t,{tool:"hashtag",badge:"📈 Reach booster",title:"AI Hashtag Generator",subtitle:"30 mixed-tier hashtags (broad, niche, micro) tuned for your platform and topic.",showTopic:!0});export{s as component};

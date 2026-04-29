@@ -1,0 +1,1 @@
+import{j as o}from"./index-D8kwP12P.js";import{T as t}from"./ToolPage-CGhuoHyI.js";import"./SiteShell-Z1higHEt.js";import"./AdSlot-B_74qiqe.js";const s=()=>o.jsx(t,{tool:"caption",badge:"🎯 Hook + CTA",title:"AI Caption Generator",subtitle:"Scroll-stopping captions with built-in hooks and CTAs — for any platform.",showTopic:!0});export{s as component};
