@@ -16,6 +16,7 @@ type GenInput = {
   goals?: string;
   keywords?: string;
   topic?: string;
+  images?: string[]; // data URLs
 };
 
 function buildPrompt(input: GenInput): { system: string; user: string } {
@@ -59,6 +60,17 @@ serve(async (req) => {
 
     const { system, user } = buildPrompt(input);
 
+    const images = (input.images ?? []).filter((s) =>
+      typeof s === "string" && s.startsWith("data:image/"),
+    );
+    const userContent: unknown =
+      images.length > 0
+        ? [
+            { type: "text", text: user + "\n\nUse the attached image(s) as visual brand/style reference." },
+            ...images.map((url) => ({ type: "image_url", image_url: { url } })),
+          ]
+        : user;
+
     const resp = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
       {
@@ -71,7 +83,7 @@ serve(async (req) => {
           model: "google/gemini-3-flash-preview",
           messages: [
             { role: "system", content: system },
-            { role: "user", content: user },
+            { role: "user", content: userContent },
           ],
         }),
       },
