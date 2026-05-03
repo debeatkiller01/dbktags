@@ -1,1 +1,0 @@
-import{j as r}from"./index-D8kwP12P.js";function d({label:e="Sponsored"}){return r.jsxs("div",{className:"my-8 flex h-24 items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-xs uppercase tracking-widest text-muted-foreground","data-ad-slot":"adsterra",children:[e," · Ad"]})}export{d as A};

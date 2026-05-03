@@ -1,1 +1,0 @@
-import{j as o}from"./index-D8kwP12P.js";import{T as t}from"./ToolPage-CGhuoHyI.js";import"./SiteShell-Z1higHEt.js";import"./AdSlot-B_74qiqe.js";const a=()=>o.jsx(t,{tool:"cta",badge:"🔗 Link-in-bio",title:"AI CTA Generator",subtitle:"8 punchy CTAs you can drop straight into your link-in-bio.",showPlatform:!1});export{a as component};
