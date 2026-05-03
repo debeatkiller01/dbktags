@@ -32,6 +32,13 @@ const PLATFORMS = [
   "Facebook",
 ];
 
+const QUALITY_PRESETS = [
+  { key: "high", label: "High Quality", min: 350, max: 500 },
+  { key: "balanced", label: "Balanced", min: 250, max: 400 },
+  { key: "smallest", label: "Smallest", min: 150, max: 250 },
+] as const;
+type PresetKey = (typeof QUALITY_PRESETS)[number]["key"];
+
 export function GeneratorForm({
   tool,
   showPlatform = true,
@@ -56,13 +63,15 @@ export function GeneratorForm({
   const [images, setImages] = useState<string[]>([]); // data URLs
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [preset, setPreset] = useState<PresetKey>("balanced");
 
   const MAX_IMAGES = 4;
   const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
-  const MIN_COMPRESSED_BYTES = 150 * 1024; // floor: never go below 150 KB
-  const TARGET_MAX_BYTES = 300 * 1024; // ceiling for compressed output
-  const COMPRESS_TRIGGER_BYTES = 300 * 1024; // only compress files larger than 300 KB
   const MAX_DIMENSION = 1920;
+  const activePreset = QUALITY_PRESETS.find((p) => p.key === preset)!;
+  const MIN_COMPRESSED_BYTES = activePreset.min * 1024;
+  const TARGET_MAX_BYTES = activePreset.max * 1024;
+  const COMPRESS_TRIGGER_BYTES = activePreset.max * 1024;
 
   const fileToDataUrl = (file: File) =>
     new Promise<string>((resolve, reject) => {
@@ -74,9 +83,14 @@ export function GeneratorForm({
 
   // Smart compression: keeps quality high, refuses to go below MIN_COMPRESSED_BYTES.
   // Skips compression entirely for already-small files or non-JPEG/PNG types (e.g. GIF).
-  const compressImage = async (file: File): Promise<string> => {
+  const compressImage = async (
+    file: File,
+    minBytes: number,
+    maxBytes: number,
+    triggerBytes: number,
+  ): Promise<string> => {
     const compressible = file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/webp";
-    if (!compressible || file.size <= COMPRESS_TRIGGER_BYTES) {
+    if (!compressible || file.size <= triggerBytes) {
       return fileToDataUrl(file);
     }
 
@@ -115,11 +129,10 @@ export function GeneratorForm({
     for (const q of qualities) {
       const out = canvas.toDataURL("image/jpeg", q);
       const size = sizeOf(out);
-      if (size < MIN_COMPRESSED_BYTES) break; // stop — would dip under 150 KB floor
+      if (size < minBytes) break; // stop — would dip under floor
       lastAboveFloor = { url: out, size };
-      if (size <= TARGET_MAX_BYTES) return out; // in target window [150, 300] KB
+      if (size <= maxBytes) return out; // in target window
     }
-    // Couldn't reach ≤ 300 KB without dropping under 150 KB — return best we have.
     return lastAboveFloor ? lastAboveFloor.url : originalUrl;
   };
 
@@ -137,7 +150,9 @@ export function GeneratorForm({
         toast.error(`${f.name || "Image"} is over 5 MB`);
         continue;
       }
-      next.push(await compressImage(f));
+      next.push(
+        await compressImage(f, MIN_COMPRESSED_BYTES, TARGET_MAX_BYTES, COMPRESS_TRIGGER_BYTES),
+      );
     }
     if (next.length) {
       setImages((prev) => [...prev, ...next]);
@@ -294,6 +309,23 @@ export function GeneratorForm({
           </Field>
 
           <Field label="Reference images (optional)">
+            <div className="mb-2 flex flex-wrap gap-2">
+              {QUALITY_PRESETS.map((p) => (
+                <button
+                  key={p.key}
+                  type="button"
+                  onClick={() => setPreset(p.key)}
+                  className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                    preset === p.key
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border bg-background hover:bg-accent"
+                  }`}
+                  aria-pressed={preset === p.key}
+                >
+                  {p.label} · {p.min}–{p.max} KB
+                </button>
+              ))}
+            </div>
             <div
               onDragOver={(e) => {
                 e.preventDefault();
