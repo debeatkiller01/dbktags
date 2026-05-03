@@ -59,8 +59,9 @@ export function GeneratorForm({
 
   const MAX_IMAGES = 4;
   const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
-  const MIN_COMPRESSED_BYTES = 150 * 1024; // never compress below 150 KB
-  const COMPRESS_TRIGGER_BYTES = 600 * 1024; // only compress files larger than this
+  const MIN_COMPRESSED_BYTES = 150 * 1024; // floor: never go below 150 KB
+  const TARGET_MAX_BYTES = 300 * 1024; // ceiling for compressed output
+  const COMPRESS_TRIGGER_BYTES = 300 * 1024; // only compress files larger than 300 KB
   const MAX_DIMENSION = 1920;
 
   const fileToDataUrl = (file: File) =>
@@ -104,23 +105,22 @@ export function GeneratorForm({
     ctx.imageSmoothingQuality = "high";
     ctx.drawImage(img, 0, 0, width, height);
 
-    // Step quality down from 0.92 → 0.7. Stop as soon as result is small enough,
-    // and never accept a result under MIN_COMPRESSED_BYTES (keeps visible quality).
-    const qualities = [0.92, 0.85, 0.8, 0.75, 0.7];
-    let best = originalUrl;
-    let bestSize = file.size;
+    // Walk quality down from 0.95 → 0.55 until output lands in [150 KB, 300 KB].
+    // Prefer the highest-quality result that fits ≤ 300 KB but stays ≥ 150 KB.
+    const sizeOf = (dataUrl: string) =>
+      Math.round((dataUrl.length - "data:image/jpeg;base64,".length) * 3 / 4);
+
+    const qualities = [0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55];
+    let lastAboveFloor: { url: string; size: number } | null = null;
     for (const q of qualities) {
       const out = canvas.toDataURL("image/jpeg", q);
-      const size = Math.round((out.length - "data:image/jpeg;base64,".length) * 3 / 4);
-      if (size < MIN_COMPRESSED_BYTES) {
-        // Too small — would hurt quality. Stop and keep previous best.
-        break;
-      }
-      best = out;
-      bestSize = size;
-      if (size <= COMPRESS_TRIGGER_BYTES) break; // good enough
+      const size = sizeOf(out);
+      if (size < MIN_COMPRESSED_BYTES) break; // stop — would dip under 150 KB floor
+      lastAboveFloor = { url: out, size };
+      if (size <= TARGET_MAX_BYTES) return out; // in target window [150, 300] KB
     }
-    return bestSize < file.size ? best : originalUrl;
+    // Couldn't reach ≤ 300 KB without dropping under 150 KB — return best we have.
+    return lastAboveFloor ? lastAboveFloor.url : originalUrl;
   };
 
   const addFiles = async (files: FileList | File[]) => {
