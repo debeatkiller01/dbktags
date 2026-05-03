@@ -59,6 +59,9 @@ export function GeneratorForm({
 
   const MAX_IMAGES = 4;
   const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
+  const MIN_COMPRESSED_BYTES = 150 * 1024; // never compress below 150 KB
+  const COMPRESS_TRIGGER_BYTES = 600 * 1024; // only compress files larger than this
+  const MAX_DIMENSION = 1920;
 
   const fileToDataUrl = (file: File) =>
     new Promise<string>((resolve, reject) => {
@@ -67,6 +70,58 @@ export function GeneratorForm({
       r.onerror = reject;
       r.readAsDataURL(file);
     });
+
+  // Smart compression: keeps quality high, refuses to go below MIN_COMPRESSED_BYTES.
+  // Skips compression entirely for already-small files or non-JPEG/PNG types (e.g. GIF).
+  const compressImage = async (file: File): Promise<string> => {
+    const compressible = file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/webp";
+    if (!compressible || file.size <= COMPRESS_TRIGGER_BYTES) {
+      return fileToDataUrl(file);
+    }
+
+    const originalUrl = await fileToDataUrl(file);
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const i = new Image();
+      i.onload = () => resolve(i);
+      i.onerror = reject;
+      i.src = originalUrl;
+    });
+
+    // Light downscale only if very large
+    let { width, height } = img;
+    if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+      const scale = Math.min(MAX_DIMENSION / width, MAX_DIMENSION / height);
+      width = Math.round(width * scale);
+      height = Math.round(height * scale);
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return originalUrl;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(img, 0, 0, width, height);
+
+    // Step quality down from 0.92 → 0.7. Stop as soon as result is small enough,
+    // and never accept a result under MIN_COMPRESSED_BYTES (keeps visible quality).
+    const qualities = [0.92, 0.85, 0.8, 0.75, 0.7];
+    let best = originalUrl;
+    let bestSize = file.size;
+    for (const q of qualities) {
+      const out = canvas.toDataURL("image/jpeg", q);
+      const size = Math.round((out.length - "data:image/jpeg;base64,".length) * 3 / 4);
+      if (size < MIN_COMPRESSED_BYTES) {
+        // Too small — would hurt quality. Stop and keep previous best.
+        break;
+      }
+      best = out;
+      bestSize = size;
+      if (size <= COMPRESS_TRIGGER_BYTES) break; // good enough
+    }
+    return bestSize < file.size ? best : originalUrl;
+  };
 
   const addFiles = async (files: FileList | File[]) => {
     const list = Array.from(files).filter((f) => f.type.startsWith("image/"));
@@ -82,7 +137,7 @@ export function GeneratorForm({
         toast.error(`${f.name || "Image"} is over 5 MB`);
         continue;
       }
-      next.push(await fileToDataUrl(f));
+      next.push(await compressImage(f));
     }
     if (next.length) {
       setImages((prev) => [...prev, ...next]);
